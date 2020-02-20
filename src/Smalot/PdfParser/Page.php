@@ -180,7 +180,7 @@ class Page extends PDFObject
      *
      * @return string
      */
-    public function getText(Page $page = null)
+    public function getText(Page $page = null, bool $returnArrayWithPosition = false)
     {
         if ($contents = $this->get('Contents')) {
 
@@ -217,10 +217,10 @@ class Page extends PDFObject
                 $contents = new PDFObject($this->document, $header, $new_content);
             }
 
-            return $contents->getText($this);
+            return $contents->getText($this, $returnArrayWithPosition);
         }
 
-        return '';
+        return $returnArrayWithPosition ? array() : '';
     }
 
 	/**

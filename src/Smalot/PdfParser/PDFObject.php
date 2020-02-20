@@ -244,9 +244,10 @@ class PDFObject
      * @return string
      * @throws \Exception
      */
-    public function getText(Page $page = null)
+    public function getText(Page $page = null, bool $returnArrayWithPosition = false)
     {
         $text                = '';
+        $textArray           = [];
         $sections            = $this->getSectionsText($this->content);
         $current_font = null;
 
@@ -388,7 +389,13 @@ class PDFObject
                              // @todo $xobject could be a ElementXRef object, which would then throw an error
                              if ( is_object($xobject) && $xobject instanceof PDFObject && !in_array($xobject->getUniqueId(), self::$recursionStack) ) {
                                 // Not a circular reference.
-                                $text .= $xobject->getText($page);
+                                if ($returnArrayWithPosition === true)
+                                {
+                                    $newData = $xobject->getText($page, true);
+                                    $textArray = array_merge($textArray, $newData);
+                                }
+                                else
+                                    $text .= $xobject->getText($page);
                             }
                         }
                         break;
@@ -430,11 +437,24 @@ class PDFObject
                     default:
                 }
             }
+
+            if ($returnArrayWithPosition === true)
+            {
+                $textArray[] = [ 
+                    "pos_td" => $current_position_td,
+                    "pos_tm" => $current_position_tm, 
+                    "text" => $text,
+                ];
+                $text = '';
+            }
         }
 
         array_pop(self::$recursionStack);
 
-        return $text . ' ';
+        if ($returnArrayWithPosition === true)
+            return $textArray;
+        else
+            return $text . ' ';
     }
 
 	/**

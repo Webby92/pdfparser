@@ -45,8 +45,10 @@ class Image extends PDFObject
      *
      * @return string
      */
-    public function getText(Page $page = null)
+    public function getText(Page $page = null, bool $returnArrayWithPosition = false)
     {
+        if ($returnArrayWithPosition === true)
+            return [];
         return '';
     }
 }

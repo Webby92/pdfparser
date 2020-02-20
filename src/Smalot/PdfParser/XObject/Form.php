@@ -46,11 +46,11 @@ class Form extends Page
      *
      * @return string
      */
-    public function getText(Page $page = null)
+    public function getText(Page $page = null, bool $returnArrayWithPosition = false)
     {
         $header   = new Header(array(), $this->document);
         $contents = new PDFObject($this->document, $header, $this->content);
 
-        return $contents->getText($this);
+        return $contents->getText($this, $returnArrayWithPosition);
     }
 }
